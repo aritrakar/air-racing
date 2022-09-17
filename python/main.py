@@ -76,6 +76,7 @@ with mp_hands.Hands(
     # pass by reference.
     image.flags.writeable = False
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    print("Image shape:", image.shape)
     results = hands.process(image)
 
     # Draw the hand annotations on the image.
@@ -98,19 +99,26 @@ with mp_hands.Hands(
             #       results.multi_hand_landmarks[1].landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x)
             # print(slope(results.multi_hand_landmarks[0].landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP],
             #             results.multi_hand_landmarks[1].landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]))
-            pyautogui.press("a")
+            s = slope(results.multi_hand_landmarks[0].landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP],
+                        results.multi_hand_landmarks[1].landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP])
+            if (s >= 0.1):
+                pyautogui.press("left")
+            elif (s <= -0.1):
+                pyautogui.press("right")
+            elif (-0.1 < s and s < 0.1):
+                pyautogui.press("up")
         # print(len(results.multi_hand_landmarks))
-        for hand_landmarks in results.multi_hand_landmarks:
-            # print("distance: ", euclideanDistance(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP],
-            #                                   hand_landmarks.landmark[mp_hands.HandLandmark.WRIST]))
-            mp_drawing.draw_landmarks(
-                image,
-                hand_landmarks,
-                mp_hands.HAND_CONNECTIONS,
-                mp_drawing_styles.get_default_hand_landmarks_style(),
-                mp_drawing_styles.get_default_hand_connections_style())
+        # for hand_landmarks in results.multi_hand_landmarks:
+        #     # print("distance: ", euclideanDistance(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP],
+        #     #                                   hand_landmarks.landmark[mp_hands.HandLandmark.WRIST]))
+        #     mp_drawing.draw_landmarks(
+        #         image,
+        #         hand_landmarks,
+        #         mp_hands.HAND_CONNECTIONS,
+        #         mp_drawing_styles.get_default_hand_landmarks_style(),
+        #         mp_drawing_styles.get_default_hand_connections_style())
     # Flip the image horizontally for a selfie-view display.
-    cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
+    # cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     if cv2.waitKey(5) & 0xFF == 27:
       break
 cap.release()
