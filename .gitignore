@@ -1,0 +1,8 @@
+#Temporary files
+*.o
+*/output
+Game/bin
+Game/tmp
+
+#Visual Studio Meta data
+Game/.
